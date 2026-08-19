@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AiInsightsRouteImport } from './routes/ai-insights'
 import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as ClassroomsRouteImport } from './routes/classrooms'
@@ -18,6 +19,11 @@ import { Route as DevicesRouteImport } from './routes/devices'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AiInsightsRoute = AiInsightsRouteImport.update({
+  id: '/ai-insights',
+  path: '/ai-insights',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AnalyticsRoute = AnalyticsRouteImport.update({
@@ -43,6 +49,7 @@ const DevicesRoute = DevicesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
   '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
@@ -50,6 +57,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
   '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
@@ -58,6 +66,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ai-insights': typeof AiInsightsRoute
   '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
@@ -65,15 +74,34 @@ export interface FileRoutesById {
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
+  fullPaths:
+    | '/'
+    | '/ai-insights'
+    | '/analytics'
+    | '/buildings'
+    | '/classrooms'
+    | '/devices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
+  to:
+    | '/'
+    | '/ai-insights'
+    | '/analytics'
+    | '/buildings'
+    | '/classrooms'
+    | '/devices'
   id:
-    '__root__' | '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
+    | '__root__'
+    | '/'
+    | '/ai-insights'
+    | '/analytics'
+    | '/buildings'
+    | '/classrooms'
+    | '/devices'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AiInsightsRoute: typeof AiInsightsRoute
   AnalyticsRoute: typeof AnalyticsRoute
   BuildingsRoute: typeof BuildingsRoute
   ClassroomsRoute: typeof ClassroomsRoute
@@ -87,6 +115,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ai-insights': {
+      id: '/ai-insights'
+      path: '/ai-insights'
+      fullPath: '/ai-insights'
+      preLoaderRoute: typeof AiInsightsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/analytics': {
@@ -122,6 +157,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AiInsightsRoute: AiInsightsRoute,
   AnalyticsRoute: AnalyticsRoute,
   BuildingsRoute: BuildingsRoute,
   ClassroomsRoute: ClassroomsRoute,
