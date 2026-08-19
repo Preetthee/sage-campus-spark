@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as ClassroomsRouteImport } from './routes/classrooms'
 import { Route as DevicesRouteImport } from './routes/devices'
@@ -17,6 +18,11 @@ import { Route as DevicesRouteImport } from './routes/devices'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnalyticsRoute = AnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BuildingsRoute = BuildingsRouteImport.update({
@@ -37,12 +43,14 @@ const DevicesRoute = DevicesRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
@@ -50,20 +58,23 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/analytics': typeof AnalyticsRoute
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/buildings' | '/classrooms' | '/devices'
+  fullPaths: '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/buildings' | '/classrooms' | '/devices'
-  id: '__root__' | '/' | '/buildings' | '/classrooms' | '/devices'
+  to: '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
+  id:
+    '__root__' | '/' | '/analytics' | '/buildings' | '/classrooms' | '/devices'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AnalyticsRoute: typeof AnalyticsRoute
   BuildingsRoute: typeof BuildingsRoute
   ClassroomsRoute: typeof ClassroomsRoute
   DevicesRoute: typeof DevicesRoute
@@ -76,6 +87,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/analytics': {
+      id: '/analytics'
+      path: '/analytics'
+      fullPath: '/analytics'
+      preLoaderRoute: typeof AnalyticsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/buildings': {
@@ -104,6 +122,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AnalyticsRoute: AnalyticsRoute,
   BuildingsRoute: BuildingsRoute,
   ClassroomsRoute: ClassroomsRoute,
   DevicesRoute: DevicesRoute,
