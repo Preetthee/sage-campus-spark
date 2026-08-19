@@ -16,8 +16,10 @@ import { Route as AnalyticsRouteImport } from './routes/analytics'
 import { Route as BuildingsRouteImport } from './routes/buildings'
 import { Route as ClassroomsRouteImport } from './routes/classrooms'
 import { Route as DevicesRouteImport } from './routes/devices'
+import { Route as ExecutiveRouteImport } from './routes/executive'
 import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as SettingsRouteImport } from './routes/settings'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -54,6 +56,11 @@ const DevicesRoute = DevicesRouteImport.update({
   path: '/devices',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExecutiveRoute = ExecutiveRouteImport.update({
+  id: '/executive',
+  path: '/executive',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PredictionsRoute = PredictionsRouteImport.update({
   id: '/predictions',
   path: '/predictions',
@@ -62,6 +69,11 @@ const PredictionsRoute = PredictionsRouteImport.update({
 const ReportsRoute = ReportsRouteImport.update({
   id: '/reports',
   path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -73,8 +85,10 @@ export interface FileRoutesByFullPath {
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
+  '/executive': typeof ExecutiveRoute
   '/predictions': typeof PredictionsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -84,8 +98,10 @@ export interface FileRoutesByTo {
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
+  '/executive': typeof ExecutiveRoute
   '/predictions': typeof PredictionsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,8 +112,10 @@ export interface FileRoutesById {
   '/buildings': typeof BuildingsRoute
   '/classrooms': typeof ClassroomsRoute
   '/devices': typeof DevicesRoute
+  '/executive': typeof ExecutiveRoute
   '/predictions': typeof PredictionsRoute
   '/reports': typeof ReportsRoute
+  '/settings': typeof SettingsRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -109,8 +127,10 @@ export interface FileRouteTypes {
     | '/buildings'
     | '/classrooms'
     | '/devices'
+    | '/executive'
     | '/predictions'
     | '/reports'
+    | '/settings'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -120,8 +140,10 @@ export interface FileRouteTypes {
     | '/buildings'
     | '/classrooms'
     | '/devices'
+    | '/executive'
     | '/predictions'
     | '/reports'
+    | '/settings'
   id:
     | '__root__'
     | '/'
@@ -131,8 +153,10 @@ export interface FileRouteTypes {
     | '/buildings'
     | '/classrooms'
     | '/devices'
+    | '/executive'
     | '/predictions'
     | '/reports'
+    | '/settings'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,8 +167,10 @@ export interface RootRouteChildren {
   BuildingsRoute: typeof BuildingsRoute
   ClassroomsRoute: typeof ClassroomsRoute
   DevicesRoute: typeof DevicesRoute
+  ExecutiveRoute: typeof ExecutiveRoute
   PredictionsRoute: typeof PredictionsRoute
   ReportsRoute: typeof ReportsRoute
+  SettingsRoute: typeof SettingsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -198,6 +224,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DevicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/executive': {
+      id: '/executive'
+      path: '/executive'
+      fullPath: '/executive'
+      preLoaderRoute: typeof ExecutiveRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/predictions': {
       id: '/predictions'
       path: '/predictions'
@@ -212,6 +245,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ReportsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -223,8 +263,10 @@ const rootRouteChildren: RootRouteChildren = {
   BuildingsRoute: BuildingsRoute,
   ClassroomsRoute: ClassroomsRoute,
   DevicesRoute: DevicesRoute,
+  ExecutiveRoute: ExecutiveRoute,
   PredictionsRoute: PredictionsRoute,
   ReportsRoute: ReportsRoute,
+  SettingsRoute: SettingsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
