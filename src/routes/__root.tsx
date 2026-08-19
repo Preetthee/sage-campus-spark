@@ -11,6 +11,9 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { SageProvider } from "../lib/sage/store";
+import { SageSidebar } from "../components/sage/Sidebar";
+import { SageTopBar } from "../components/sage/TopBar";
 
 function NotFoundComponent() {
   return (
@@ -77,11 +80,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "SAGE — Smart AI for Green Energy" },
+      {
+        name: "description",
+        content:
+          "AI-powered smart campus energy intelligence for Varendra University: live monitoring, waste detection, forecasts and executive reporting.",
+      },
+      { name: "author", content: "SAGE" },
+      { property: "og:title", content: "SAGE — Smart AI for Green Energy" },
+      {
+        property: "og:description",
+        content: "Monitor, predict and optimise campus energy consumption with AI.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
@@ -90,6 +100,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -119,8 +135,18 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <SageProvider>
+        <div className="flex min-h-screen bg-background">
+          <SageSidebar />
+          <div className="flex min-w-0 flex-1 flex-col">
+            <SageTopBar />
+            <main className="print-area grid-glow flex-1 px-4 py-6 md:px-6">
+              {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+              <Outlet />
+            </main>
+          </div>
+        </div>
+      </SageProvider>
     </QueryClientProvider>
   );
 }
