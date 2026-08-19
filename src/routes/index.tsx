@@ -70,7 +70,7 @@ function Dashboard() {
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-3">
+      <div className="grid items-start gap-4 xl:grid-cols-3">
         <Panel
           className="xl:col-span-2"
           title="Campus load vs wasted load"
