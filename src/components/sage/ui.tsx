@@ -126,8 +126,9 @@ export function Meter({ value, tone = "energy" }: { value: number; tone?: "energ
 }
 
 export function downloadCsv(filename: string, rows: Array<Record<string, string | number>>) {
-  if (!rows.length) return;
-  const headers = Object.keys(rows[0]);
+  const first = rows[0];
+  if (!first) return;
+  const headers = Object.keys(first);
   const csv = [
     headers.join(","),
     ...rows.map((r) => headers.map((h) => `"${String(r[h] ?? "")}"`).join(",")),
