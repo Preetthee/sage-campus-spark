@@ -32,8 +32,6 @@ const ICONS: Record<DeviceType, typeof Fan> = {
   projector: MonitorPlay,
 };
 
-export default function noop() {}
-
 function Devices() {
   const { state } = useSage();
   const [status, setStatus] = useState<DeviceStatus | "all">("all");
