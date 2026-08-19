@@ -24,7 +24,7 @@ const BUILDINGS: Building[] = [
   { id: "b-b", code: "B", name: "Engineering Block B", floors: 3 },
   { id: "b-c", code: "C", name: "Science Block C", floors: 4 },
   { id: "b-d", code: "D", name: "Library & Admin D", floors: 2 },
-};
+];
 
 const DEVICE_SPEC: Array<{ type: DeviceType; count: number; watts: number; label: string }> = [
   { type: "light", count: 6, watts: 36, label: "Tube light" },
