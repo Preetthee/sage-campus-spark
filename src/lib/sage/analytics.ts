@@ -10,7 +10,7 @@ export const DEFAULT_SETTINGS: Settings = {
   tariff: 8.5,
   currency: "BDT",
   co2PerKwh: 0.68,
-  tickMs: 2000,
+  tickMs: 8000,
   highConsumptionKw: 2.4,
   campusName: "Varendra University",
   liveAi: true,

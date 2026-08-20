@@ -41,3 +41,19 @@ CREATE TABLE public.discord_alert_log (
 GRANT ALL ON public.discord_alert_log TO service_role;
 ALTER TABLE public.discord_alert_log ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "No direct client access to alert log" ON public.discord_alert_log FOR SELECT TO authenticated USING (false);
+
+-- Canonical live telemetry stream. The payload intentionally matches the
+-- dashboard's domain state so the producer can later be replaced by an IoT
+-- ingestion service without changing the dashboard contract.
+CREATE TABLE public.campus_telemetry (
+  id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
+  source TEXT NOT NULL DEFAULT 'server-demo-producer',
+  tick INTEGER NOT NULL DEFAULT 0,
+  state JSONB NOT NULL
+);
+
+CREATE INDEX campus_telemetry_created_at_idx ON public.campus_telemetry (created_at DESC);
+GRANT ALL ON public.campus_telemetry TO service_role;
+ALTER TABLE public.campus_telemetry ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "No direct client access to telemetry" ON public.campus_telemetry FOR SELECT TO authenticated USING (false);

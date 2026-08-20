@@ -49,8 +49,12 @@ function SettingsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Settings"
-        subtitle="Configuration is held in the browser for this demo deployment — nothing is persisted to a server."
-        actions={<Pill tone={running ? "energy" : "muted"}>{running ? "Simulator running" : "Simulator paused"}</Pill>}
+        subtitle="Dashboard preferences are held in this browser; campus telemetry is persisted in Supabase."
+        actions={
+          <Pill tone={running ? "energy" : "muted"}>
+            {running ? "Telemetry running" : "Telemetry paused"}
+          </Pill>
+        }
       />
 
       <div className="grid gap-4 xl:grid-cols-2">
@@ -122,7 +126,7 @@ function SettingsPage() {
 
         <Panel title="Sensor simulator">
           <label className="block text-xs text-muted-foreground">
-            Tick interval (ms): <span className="tabular text-foreground">{settings.tickMs}</span>
+            Refresh interval (ms): <span className="tabular text-foreground">{settings.tickMs}</span>
             <input
               type="range"
               min={500}
@@ -138,7 +142,7 @@ function SettingsPage() {
             onClick={() => setRunning(!running)}
             className="mt-4 rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
           >
-            {running ? "Pause stream" : "Resume stream"}
+            {running ? "Pause telemetry" : "Resume telemetry"}
           </button>
           <p className="mt-4 text-[11px] text-muted-foreground">
             The simulator models occupancy, lighting, fans, air conditioning, device degradation and forgotten

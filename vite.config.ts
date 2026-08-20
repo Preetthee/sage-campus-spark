@@ -10,7 +10,9 @@ export default defineConfig({
   vite: {
     server: {
       proxy: {
-        "/api": "http://localhost:4000",
+        "/api/health": "http://localhost:4000",
+        "/api/analytics": "http://localhost:4000",
+        "/api/public/discord": "http://localhost:4000",
       },
     },
   },

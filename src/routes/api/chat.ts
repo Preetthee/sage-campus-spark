@@ -28,7 +28,7 @@ export const Route = createFileRoute("/api/chat")({
 
         const system = [
           "You are the SAGE Energy Guardian, an AI analyst for a smart campus energy platform.",
-          "You receive a compact JSON summary of live campus telemetry (simulated IoT sensors).",
+          "You receive a compact JSON summary of live campus telemetry from the campus data stream.",
           "Answer concisely in markdown, quantify impact in kW, kWh, currency and kg CO2 when possible,",
           "and always end with a concrete recommended action. Never invent rooms or buildings that are not in the context.",
           "",

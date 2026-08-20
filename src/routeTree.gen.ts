@@ -21,6 +21,9 @@ import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiTelemetryAcknowledgeRouteImport } from './routes/api/telemetry/acknowledge'
+import { Route as ApiTelemetryAdvanceRouteImport } from './routes/api/telemetry/advance'
+import { Route as ApiTelemetryCurrentRouteImport } from './routes/api/telemetry/current'
 import { Route as ApiPublicDiscordAlertsRouteImport } from './routes/api/public/discord/alerts'
 import { Route as ApiPublicDiscordAskRouteImport } from './routes/api/public/discord/ask'
 import { Route as ApiPublicDiscordStatusRouteImport } from './routes/api/public/discord/status'
@@ -86,6 +89,21 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiTelemetryAcknowledgeRoute = ApiTelemetryAcknowledgeRouteImport.update({
+  id: '/api/telemetry/acknowledge',
+  path: '/api/telemetry/acknowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTelemetryAdvanceRoute = ApiTelemetryAdvanceRouteImport.update({
+  id: '/api/telemetry/advance',
+  path: '/api/telemetry/advance',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiTelemetryCurrentRoute = ApiTelemetryCurrentRouteImport.update({
+  id: '/api/telemetry/current',
+  path: '/api/telemetry/current',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDiscordAlertsRoute = ApiPublicDiscordAlertsRouteImport.update({
   id: '/api/public/discord/alerts',
   path: '/api/public/discord/alerts',
@@ -120,6 +138,9 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/telemetry/acknowledge': typeof ApiTelemetryAcknowledgeRoute
+  '/api/telemetry/advance': typeof ApiTelemetryAdvanceRoute
+  '/api/telemetry/current': typeof ApiTelemetryCurrentRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
   '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
@@ -138,6 +159,9 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/telemetry/acknowledge': typeof ApiTelemetryAcknowledgeRoute
+  '/api/telemetry/advance': typeof ApiTelemetryAdvanceRoute
+  '/api/telemetry/current': typeof ApiTelemetryCurrentRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
   '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
@@ -157,6 +181,9 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/telemetry/acknowledge': typeof ApiTelemetryAcknowledgeRoute
+  '/api/telemetry/advance': typeof ApiTelemetryAdvanceRoute
+  '/api/telemetry/current': typeof ApiTelemetryCurrentRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
   '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
@@ -177,6 +204,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/telemetry/acknowledge'
+    | '/api/telemetry/advance'
+    | '/api/telemetry/current'
     | '/api/public/discord/alerts'
     | '/api/public/discord/ask'
     | '/api/public/discord/status'
@@ -195,6 +225,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/telemetry/acknowledge'
+    | '/api/telemetry/advance'
+    | '/api/telemetry/current'
     | '/api/public/discord/alerts'
     | '/api/public/discord/ask'
     | '/api/public/discord/status'
@@ -213,6 +246,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/telemetry/acknowledge'
+    | '/api/telemetry/advance'
+    | '/api/telemetry/current'
     | '/api/public/discord/alerts'
     | '/api/public/discord/ask'
     | '/api/public/discord/status'
@@ -232,6 +268,9 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiTelemetryAcknowledgeRoute: typeof ApiTelemetryAcknowledgeRoute
+  ApiTelemetryAdvanceRoute: typeof ApiTelemetryAdvanceRoute
+  ApiTelemetryCurrentRoute: typeof ApiTelemetryCurrentRoute
   ApiPublicDiscordAlertsRoute: typeof ApiPublicDiscordAlertsRoute
   ApiPublicDiscordAskRoute: typeof ApiPublicDiscordAskRoute
   ApiPublicDiscordStatusRoute: typeof ApiPublicDiscordStatusRoute
@@ -324,6 +363,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/telemetry/acknowledge': {
+      id: '/api/telemetry/acknowledge'
+      path: '/api/telemetry/acknowledge'
+      fullPath: '/api/telemetry/acknowledge'
+      preLoaderRoute: typeof ApiTelemetryAcknowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/telemetry/advance': {
+      id: '/api/telemetry/advance'
+      path: '/api/telemetry/advance'
+      fullPath: '/api/telemetry/advance'
+      preLoaderRoute: typeof ApiTelemetryAdvanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/telemetry/current': {
+      id: '/api/telemetry/current'
+      path: '/api/telemetry/current'
+      fullPath: '/api/telemetry/current'
+      preLoaderRoute: typeof ApiTelemetryCurrentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/discord/alerts': {
       id: '/api/public/discord/alerts'
       path: '/api/public/discord/alerts'
@@ -368,6 +428,9 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiTelemetryAcknowledgeRoute: ApiTelemetryAcknowledgeRoute,
+  ApiTelemetryAdvanceRoute: ApiTelemetryAdvanceRoute,
+  ApiTelemetryCurrentRoute: ApiTelemetryCurrentRoute,
   ApiPublicDiscordAlertsRoute: ApiPublicDiscordAlertsRoute,
   ApiPublicDiscordAskRoute: ApiPublicDiscordAskRoute,
   ApiPublicDiscordStatusRoute: ApiPublicDiscordStatusRoute,

@@ -26,6 +26,13 @@ const BUILDINGS: Building[] = [
   { id: "b-d", code: "D", name: "Library & Admin D", floors: 2 },
 ];
 
+const ROOM_TARGETS: Record<Building["id"], number> = {
+  "b-a": 60,
+  "b-b": 50,
+  "b-c": 60,
+  "b-d": 30,
+};
+
 const DEVICE_SPEC: Array<{ type: DeviceType; count: number; watts: number; label: string }> = [
   { type: "light", count: 6, watts: 36, label: "Tube light" },
   { type: "fan", count: 4, watts: 75, label: "Ceiling fan" },
@@ -34,6 +41,7 @@ const DEVICE_SPEC: Array<{ type: DeviceType; count: number; watts: number; label
 ];
 
 export const CAMPUS_BUILDINGS = BUILDINGS;
+export const CAMPUS_ROOM_COUNT = Object.values(ROOM_TARGETS).reduce((sum, count) => sum + count, 0);
 
 export function formatClock(minutes: number) {
   const h = Math.floor(minutes / 60) % 24;
@@ -49,10 +57,13 @@ export function createCampus(startMinutes = 10 * 60 + 20): CampusState {
   const devices: Device[] = [];
 
   BUILDINGS.forEach((building) => {
-    const perFloor = building.id === "b-d" ? 2 : 2;
+    const target = ROOM_TARGETS[building.id];
+    const baseRoomsPerFloor = Math.floor(target / building.floors);
+    const extraRooms = target % building.floors;
     for (let floor = 1; floor <= building.floors; floor++) {
-      for (let n = 1; n <= perFloor; n++) {
-        const code = `${building.code}-${floor}0${n}`;
+      const roomsOnFloor = baseRoomsPerFloor + (floor <= extraRooms ? 1 : 0);
+      for (let n = 1; n <= roomsOnFloor; n++) {
+        const code = `${building.code}-${floor}${String(n).padStart(2, "0")}`;
         const id = `r-${code.toLowerCase()}`;
         const capacity = 30 + Math.floor(rand() * 40);
         rooms.push({

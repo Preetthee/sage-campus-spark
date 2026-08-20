@@ -86,6 +86,30 @@ export type Database = {
         }
         Relationships: []
       }
+      campus_telemetry: {
+        Row: {
+          created_at: string
+          id: string
+          source: string
+          state: Json
+          tick: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          source?: string
+          state: Json
+          tick?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          source?: string
+          state?: Json
+          tick?: number
+        }
+        Relationships: []
+      }
       discord_alert_log: {
         Row: {
           alert_id: string

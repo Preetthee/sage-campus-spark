@@ -1,6 +1,6 @@
 # SAGE — Smart AI for Green Energy
 
-SAGE is a campus-energy intelligence dashboard for Varendra University. It simulates classroom occupancy and device use, identifies energy waste, provides reports and recommendations, and includes an optional Discord bot for campus-energy questions.
+SAGE is a campus-energy intelligence dashboard for Varendra University. It reads persisted campus telemetry from Supabase, identifies energy waste, provides reports and recommendations, and includes an optional Discord bot for campus-energy questions.
 
 ## Requirements
 
@@ -15,10 +15,15 @@ Clone the repository, install its locked dependencies, then launch the dashboard
 git clone <repository-url>
 cd sage-campus-spark
 npm install
+export SUPABASE_URL="https://your-project.supabase.co"
+export SUPABASE_SERVICE_ROLE_KEY="your-service-role-key"
+export SAGE_PRODUCER_KEY="a-long-random-local-secret"
 npm run dev:all
 ```
 
 Open the frontend URL shown by Vite (normally `http://localhost:3000`). The backend runs at `http://localhost:4000`.
+
+Apply the Supabase migration in `supabase/migrations/` before the first run. The service-role key is server-only and must never be exposed as a `VITE_` variable.
 
 ### Available commands
 
@@ -27,22 +32,25 @@ Open the frontend URL shown by Vite (normally `http://localhost:3000`). The back
 | `npm run dev:all` | Run the frontend and backend together. |
 | `npm run dev:frontend` | Run only the Vite/TanStack frontend. |
 | `npm run dev:backend` | Run only the local telemetry API on port 4000. |
+| `npm run telemetry:producer` | Persist the next campus telemetry reading every 8 seconds. |
 | `npm run build` | Create a production frontend build. |
 | `npm run discord:setup` | Configure the Discord bot interactively. |
 | `npm run discord:register` | Register the Discord slash commands. |
 | `npm run discord:start` | Start the Discord bot. |
 
-## Local backend and data
+## Database telemetry
 
-The standalone Node backend is in [`backend/server.js`](backend/server.js). At startup it deterministically generates **365 days** of campus-energy records using the same four-building context as the dashboard simulator. No database or hosted service is required for local development.
+The canonical live state is stored in the `campus_telemetry` Supabase table. The server-side producer initializes the campus state and persists the next reading every **8 seconds**. The browser never generates telemetry; it polls the latest database row every 8 seconds.
+
+The producer is a development data source until a real IoT gateway is connected. It writes through `POST /api/telemetry/advance` using the `SAGE_PRODUCER_KEY` header. A future gateway can replace this endpoint while preserving the dashboard read contract.
 
 | Endpoint | Description |
 | --- | --- |
-| `GET /api/health` | Backend health check and generated-record count. |
-| `GET /api/analytics/year` | All 365 daily energy records. |
-| `GET /api/analytics/summary` | Annual totals, recent consumption, and the highest-waste day. |
+| `GET /api/telemetry/current` | The newest persisted campus state and recording timestamp. |
+| `POST /api/telemetry/advance` | Trusted producer endpoint that persists the next reading. |
+| `POST /api/telemetry/acknowledge` | Persists an alert acknowledgement in the latest state. |
 
-Vite proxies `/api` requests to port 4000. The Energy Analytics weekly chart automatically uses the backend data when it is available; it falls back to the live browser simulation if the backend is not running.
+The frontend server handles the telemetry routes. The legacy backend remains available for the existing Discord and historical API commands while those consumers are being migrated.
 
 ## Discord bot
 
@@ -68,10 +76,10 @@ The Discord bot is optional and uses the same local 365-day data. It has these c
 
    Values are saved only in gitignored `bot/.env`. Never commit that file or share the Bot Token.
 
-6. Start or restart the backend so it reads `bot/.env`, register the commands, then start the bot:
+6. Start the frontend, backend, and database producer so the bot and dashboard read current data, then register the commands and start the bot:
 
    ```bash
-   npm run dev:backend
+   npm run dev:all
    npm run discord:register
    npm run discord:start
    ```
@@ -81,15 +89,17 @@ Set a Guild ID during setup for immediate command registration while testing. Gl
 ## Project structure
 
 ```text
-backend/                 Local HTTP API and one-year telemetry generator
+backend/                 Legacy local HTTP API and Discord compatibility routes
 bot/                     Discord slash-command bot and setup helper
-src/lib/sage/            Browser simulation, metrics, recommendations and types
+src/lib/sage/            Database adapter, metrics, recommendations and types
+scripts/telemetry-producer.mjs  Server-side 8-second telemetry producer
 src/routes/              Dashboard pages and TanStack Start routes
 src/routes/analytics.tsx Frontend consumer of local historical data
 ```
 
 ## Notes
 
-- The browser simulator remains live and interactive for demonstrations.
-- The local backend is intentionally self-contained; its seeded historical data is repeatable after every clone.
+- Supabase is the source of truth for current telemetry and alert acknowledgements.
+- The producer is intentionally deterministic and is a development replacement for a real IoT ingestion service.
+- Dashboard refresh and producer write cadence are both 8 seconds.
 - This project remains connected to Lovable. Avoid force-pushing or rewriting published git history.

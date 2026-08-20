@@ -26,16 +26,25 @@ export const Route = createFileRoute("/")({
 });
 
 function Dashboard() {
-  const { state, metrics, settings } = useSage();
+  const { state, metrics, settings, telemetryError } = useSage();
   const worst = [...metrics.rooms].sort((a, b) => b.wasteKw - a.wasteKw).slice(0, 6);
   const alerts = state.alerts.filter((a) => !a.acknowledged).slice(0, 6);
 
   return (
     <div className="space-y-6">
+      {telemetryError && (
+        <div className="rounded-md border border-critical/40 bg-critical/10 px-4 py-3 text-sm text-critical">
+          Live telemetry is unavailable: {telemetryError}
+        </div>
+      )}
       <PageHeader
         title="Campus Energy Dashboard"
         subtitle={`Live intelligence across ${metrics.totalRooms} monitored classrooms in ${metrics.buildings.length} buildings at ${settings.campusName}.`}
-        actions={<Pill tone="energy">Simulated IoT stream · tick {state.tick}</Pill>}
+        actions={
+          <Pill tone={telemetryError ? "critical" : "energy"}>
+            {telemetryError ? "Waiting for telemetry" : `Simulated IoT stream · tick ${state.tick}`}
+          </Pill>
+        }
       />
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">

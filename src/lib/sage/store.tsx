@@ -8,19 +8,30 @@ import {
   type ReactNode,
 } from "react";
 
-import { notifyAlerts, pushSnapshot } from "@/lib/discord/discord.functions";
+import { notifyAlerts } from "@/lib/discord/discord.functions";
 import { severityRank } from "@/lib/discord/shared";
 
 import { DEFAULT_SETTINGS, computeMetrics } from "./analytics";
-import { advance, createCampus } from "./simulator";
+import { acknowledgeTelemetryAlert, getCurrentTelemetry } from "./database";
 import { buildSnapshot } from "./snapshot";
 import type { CampusMetrics, CampusState, Settings } from "./types";
+
+const EMPTY_STATE: CampusState = {
+  tick: 0,
+  clockMinutes: 0,
+  buildings: [],
+  rooms: [],
+  devices: [],
+  alerts: [],
+  history: [],
+};
 
 interface SageContextValue {
   state: CampusState;
   metrics: CampusMetrics;
   settings: Settings;
   running: boolean;
+  telemetryError: string | null;
   discordSyncedAt: number | null;
   discordAlertsSent: number;
   setRunning: (v: boolean) => void;
@@ -31,50 +42,46 @@ interface SageContextValue {
 const SageContext = createContext<SageContextValue | null>(null);
 
 export function SageProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<CampusState>(() => createCampus());
+  const [state, setState] = useState<CampusState>(EMPTY_STATE);
   const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
   const [running, setRunning] = useState(true);
+  const [telemetryError, setTelemetryError] = useState<string | null>(null);
   const [discordSyncedAt, setDiscordSyncedAt] = useState<number | null>(null);
   const [discordAlertsSent, setDiscordAlertsSent] = useState(0);
 
-  const latest = useRef({ state, settings });
   const sentAlertIds = useRef(new Set<string>());
 
   useEffect(() => {
     if (!running) return;
-    const id = window.setInterval(() => setState((prev) => advance(prev)), settings.tickMs);
-    return () => window.clearInterval(id);
-  }, [running, settings.tickMs]);
-
-  const metrics = useMemo(() => computeMetrics(state, settings), [state, settings]);
-
-  latest.current = { state, settings };
-
-  // Push a snapshot to the backend so the Discord bot can answer /status even
-  // when no dashboard tab is open.
-  useEffect(() => {
-    if (!settings.discordEnabled) return;
 
     let cancelled = false;
-    const send = async () => {
-      const { state: s, settings: cfg } = latest.current;
+    const refresh = async () => {
       try {
-        await pushSnapshot({
-          data: { snapshot: buildSnapshot(s, computeMetrics(s, cfg), cfg) },
-        });
-        if (!cancelled) setDiscordSyncedAt(Date.now());
+        const telemetry = await getCurrentTelemetry();
+        if (!cancelled && telemetry.state) {
+          setState(telemetry.state);
+          setTelemetryError(null);
+          if (telemetry.recordedAt) setDiscordSyncedAt(Date.parse(telemetry.recordedAt));
+        } else if (!cancelled) {
+          setTelemetryError("No telemetry readings have been received yet.");
+        }
       } catch (error) {
-        console.error("Snapshot push failed", error);
+        console.error("Telemetry refresh failed", error);
+        if (!cancelled) {
+          setTelemetryError(error instanceof Error ? error.message : "Telemetry refresh failed.");
+        }
       }
     };
 
-    void send();
-    const id = window.setInterval(() => void send(), 30_000);
+    void refresh();
+    const id = window.setInterval(() => void refresh(), settings.tickMs);
     return () => {
       cancelled = true;
       window.clearInterval(id);
     };
-  }, [settings.discordEnabled]);
+  }, [running, settings.tickMs]);
+
+  const metrics = useMemo(() => computeMetrics(state, settings), [state, settings]);
 
   // Forward new high-severity alerts to the Discord channel exactly once.
   useEffect(() => {
@@ -82,15 +89,14 @@ export function SageProvider({ children }: { children: ReactNode }) {
 
     const hour = new Date().getHours();
     const { discordQuietHours: quiet, discordQuietFrom: from, discordQuietTo: to } = settings;
-    const inQuietHours = quiet && (from <= to ? hour >= from && hour < to : hour >= from || hour < to);
+    const inQuietHours =
+      quiet && (from <= to ? hour >= from && hour < to : hour >= from || hour < to);
     if (inQuietHours) return;
 
     const threshold = severityRank(settings.discordMinSeverity);
     const fresh = state.alerts.filter(
       (a) =>
-        !a.acknowledged &&
-        severityRank(a.severity) >= threshold &&
-        !sentAlertIds.current.has(a.id),
+        !a.acknowledged && severityRank(a.severity) >= threshold && !sentAlertIds.current.has(a.id),
     );
     if (fresh.length === 0) return;
 
@@ -120,17 +126,22 @@ export function SageProvider({ children }: { children: ReactNode }) {
       metrics,
       settings,
       running,
+      telemetryError,
       discordSyncedAt,
       discordAlertsSent,
       setRunning,
       updateSettings: (patch) => setSettings((prev) => ({ ...prev, ...patch })),
-      acknowledge: (id) =>
+      acknowledge: (id) => {
+        void acknowledgeTelemetryAlert(id).catch((error) =>
+          console.error("Alert acknowledgement failed", error),
+        );
         setState((prev) => ({
           ...prev,
           alerts: prev.alerts.map((a) => (a.id === id ? { ...a, acknowledged: true } : a)),
-        })),
+        }));
+      },
     }),
-    [state, metrics, settings, running, discordSyncedAt, discordAlertsSent],
+    [state, metrics, settings, running, telemetryError, discordSyncedAt, discordAlertsSent],
   );
 
   return <SageContext.Provider value={value}>{children}</SageContext.Provider>;
