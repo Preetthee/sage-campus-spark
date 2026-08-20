@@ -22,7 +22,7 @@ export interface SnapshotAlert {
   severity: "critical" | "warning" | "info";
   title: string;
   detail: string;
-  room?: string;
+  room?: string | undefined;
   wasteKw: number;
   createdAt: number;
 }

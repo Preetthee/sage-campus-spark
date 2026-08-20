@@ -15,6 +15,11 @@ export const DEFAULT_SETTINGS: Settings = {
   campusName: "Varendra University",
   liveAi: true,
   aiModel: "google/gemini-3.7-flash",
+  discordEnabled: true,
+  discordMinSeverity: "critical",
+  discordQuietHours: false,
+  discordQuietFrom: 22,
+  discordQuietTo: 7,
 };
 
 function efficiencyFrom(wastePct: number) {
