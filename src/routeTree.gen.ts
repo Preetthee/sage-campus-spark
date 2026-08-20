@@ -21,6 +21,9 @@ import { Route as PredictionsRouteImport } from './routes/predictions'
 import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiPublicDiscordAlertsRouteImport } from './routes/api/public/discord/alerts'
+import { Route as ApiPublicDiscordStatusRouteImport } from './routes/api/public/discord/status'
+import { Route as ApiPublicDiscordWasteRouteImport } from './routes/api/public/discord/waste'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -82,6 +85,21 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDiscordAlertsRoute = ApiPublicDiscordAlertsRouteImport.update({
+  id: '/api/public/discord/alerts',
+  path: '/api/public/discord/alerts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDiscordStatusRoute = ApiPublicDiscordStatusRouteImport.update({
+  id: '/api/public/discord/status',
+  path: '/api/public/discord/status',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicDiscordWasteRoute = ApiPublicDiscordWasteRouteImport.update({
+  id: '/api/public/discord/waste',
+  path: '/api/public/discord/waste',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +114,9 @@ export interface FileRoutesByFullPath {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
+  '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +131,9 @@ export interface FileRoutesByTo {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
+  '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +149,9 @@ export interface FileRoutesById {
   '/reports': typeof ReportsRoute
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
+  '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +168,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/public/discord/alerts'
+    | '/api/public/discord/status'
+    | '/api/public/discord/waste'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +185,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/public/discord/alerts'
+    | '/api/public/discord/status'
+    | '/api/public/discord/waste'
   id:
     | '__root__'
     | '/'
@@ -169,6 +202,9 @@ export interface FileRouteTypes {
     | '/reports'
     | '/settings'
     | '/api/chat'
+    | '/api/public/discord/alerts'
+    | '/api/public/discord/status'
+    | '/api/public/discord/waste'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +220,9 @@ export interface RootRouteChildren {
   ReportsRoute: typeof ReportsRoute
   SettingsRoute: typeof SettingsRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiPublicDiscordAlertsRoute: typeof ApiPublicDiscordAlertsRoute
+  ApiPublicDiscordStatusRoute: typeof ApiPublicDiscordStatusRoute
+  ApiPublicDiscordWasteRoute: typeof ApiPublicDiscordWasteRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -272,6 +311,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord/alerts': {
+      id: '/api/public/discord/alerts'
+      path: '/api/public/discord/alerts'
+      fullPath: '/api/public/discord/alerts'
+      preLoaderRoute: typeof ApiPublicDiscordAlertsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/discord/status': {
+      id: '/api/public/discord/status'
+      path: '/api/public/discord/status'
+      fullPath: '/api/public/discord/status'
+      preLoaderRoute: typeof ApiPublicDiscordStatusRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/discord/waste': {
+      id: '/api/public/discord/waste'
+      path: '/api/public/discord/waste'
+      fullPath: '/api/public/discord/waste'
+      preLoaderRoute: typeof ApiPublicDiscordWasteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -288,6 +348,9 @@ const rootRouteChildren: RootRouteChildren = {
   ReportsRoute: ReportsRoute,
   SettingsRoute: SettingsRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiPublicDiscordAlertsRoute: ApiPublicDiscordAlertsRoute,
+  ApiPublicDiscordStatusRoute: ApiPublicDiscordStatusRoute,
+  ApiPublicDiscordWasteRoute: ApiPublicDiscordWasteRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
