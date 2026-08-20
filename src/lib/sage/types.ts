@@ -81,6 +81,8 @@ export interface Settings {
   tickMs: number;
   highConsumptionKw: number;
   campusName: string;
+  liveAi: boolean;
+  aiModel: string;
 }
 
 export interface RoomMetrics {
