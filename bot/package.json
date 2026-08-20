@@ -1,0 +1,14 @@
+{
+  "name": "sage-discord-bot",
+  "private": true,
+  "type": "module",
+  "description": "Local Discord bot for the SAGE campus energy platform",
+  "scripts": {
+    "register": "node register-commands.js",
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "discord.js": "^14.16.3",
+    "dotenv": "^16.4.5"
+  }
+}
