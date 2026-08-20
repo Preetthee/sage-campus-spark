@@ -22,6 +22,7 @@ import { Route as ReportsRouteImport } from './routes/reports'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiPublicDiscordAlertsRouteImport } from './routes/api/public/discord/alerts'
+import { Route as ApiPublicDiscordAskRouteImport } from './routes/api/public/discord/ask'
 import { Route as ApiPublicDiscordStatusRouteImport } from './routes/api/public/discord/status'
 import { Route as ApiPublicDiscordWasteRouteImport } from './routes/api/public/discord/waste'
 
@@ -90,6 +91,11 @@ const ApiPublicDiscordAlertsRoute = ApiPublicDiscordAlertsRouteImport.update({
   path: '/api/public/discord/alerts',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicDiscordAskRoute = ApiPublicDiscordAskRouteImport.update({
+  id: '/api/public/discord/ask',
+  path: '/api/public/discord/ask',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicDiscordStatusRoute = ApiPublicDiscordStatusRouteImport.update({
   id: '/api/public/discord/status',
   path: '/api/public/discord/status',
@@ -115,6 +121,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
   '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
@@ -132,6 +139,7 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
   '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
@@ -150,6 +158,7 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/discord/alerts': typeof ApiPublicDiscordAlertsRoute
+  '/api/public/discord/ask': typeof ApiPublicDiscordAskRoute
   '/api/public/discord/status': typeof ApiPublicDiscordStatusRoute
   '/api/public/discord/waste': typeof ApiPublicDiscordWasteRoute
 }
@@ -169,6 +178,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/chat'
     | '/api/public/discord/alerts'
+    | '/api/public/discord/ask'
     | '/api/public/discord/status'
     | '/api/public/discord/waste'
   fileRoutesByTo: FileRoutesByTo
@@ -186,6 +196,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/chat'
     | '/api/public/discord/alerts'
+    | '/api/public/discord/ask'
     | '/api/public/discord/status'
     | '/api/public/discord/waste'
   id:
@@ -203,6 +214,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/api/chat'
     | '/api/public/discord/alerts'
+    | '/api/public/discord/ask'
     | '/api/public/discord/status'
     | '/api/public/discord/waste'
   fileRoutesById: FileRoutesById
@@ -221,6 +233,7 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiPublicDiscordAlertsRoute: typeof ApiPublicDiscordAlertsRoute
+  ApiPublicDiscordAskRoute: typeof ApiPublicDiscordAskRoute
   ApiPublicDiscordStatusRoute: typeof ApiPublicDiscordStatusRoute
   ApiPublicDiscordWasteRoute: typeof ApiPublicDiscordWasteRoute
 }
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicDiscordAlertsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/discord/ask': {
+      id: '/api/public/discord/ask'
+      path: '/api/public/discord/ask'
+      fullPath: '/api/public/discord/ask'
+      preLoaderRoute: typeof ApiPublicDiscordAskRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/discord/status': {
       id: '/api/public/discord/status'
       path: '/api/public/discord/status'
@@ -349,6 +369,7 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   ApiChatRoute: ApiChatRoute,
   ApiPublicDiscordAlertsRoute: ApiPublicDiscordAlertsRoute,
+  ApiPublicDiscordAskRoute: ApiPublicDiscordAskRoute,
   ApiPublicDiscordStatusRoute: ApiPublicDiscordStatusRoute,
   ApiPublicDiscordWasteRoute: ApiPublicDiscordWasteRoute,
 }

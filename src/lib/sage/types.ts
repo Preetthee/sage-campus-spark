@@ -83,6 +83,11 @@ export interface Settings {
   campusName: string;
   liveAi: boolean;
   aiModel: string;
+  discordEnabled: boolean;
+  discordMinSeverity: "critical" | "warning";
+  discordQuietHours: boolean;
+  discordQuietFrom: number;
+  discordQuietTo: number;
 }
 
 export interface RoomMetrics {
