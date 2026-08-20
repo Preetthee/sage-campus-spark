@@ -82,6 +82,7 @@ export interface Settings {
   highConsumptionKw: number;
   campusName: string;
   liveAi: boolean;
+  aiProvider: "lovable" | "openai-compatible";
   aiModel: string;
   discordEnabled: boolean;
   discordMinSeverity: "critical" | "warning";

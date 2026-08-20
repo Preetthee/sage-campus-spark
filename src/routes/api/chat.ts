@@ -1,8 +1,12 @@
-import { createLovableAiGatewayProvider, getLovableAiGatewayRunId } from "@/lib/ai-gateway.server";
+import {
+  createExternalAiProvider,
+  createLovableAiGatewayProvider,
+  getLovableAiGatewayRunId,
+} from "@/lib/ai-gateway.server";
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
-type ChatRequestBody = { messages?: unknown; context?: unknown; model?: unknown };
+type ChatRequestBody = { messages?: unknown; context?: unknown; model?: unknown; provider?: unknown };
 
 const ALLOWED_MODELS = [
   "google/gemini-3.7-flash",
@@ -21,10 +25,21 @@ export const Route = createFileRoute("/api/chat")({
           return new Response("Messages are required", { status: 400 });
         }
 
-        const key = process.env["LOVABLE_API_KEY"];
-        if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
-
-        const gateway = createLovableAiGatewayProvider(key, getLovableAiGatewayRunId(request));
+        const provider = body.provider === "openai-compatible" ? "openai-compatible" : "lovable";
+        let gateway: ReturnType<typeof createLovableAiGatewayProvider> | ReturnType<typeof createExternalAiProvider>;
+        try {
+          if (provider === "openai-compatible") {
+            gateway = createExternalAiProvider();
+          } else {
+            const key = process.env["LOVABLE_API_KEY"];
+            if (!key) return new Response("Missing LOVABLE_API_KEY", { status: 500 });
+            gateway = createLovableAiGatewayProvider(key, getLovableAiGatewayRunId(request));
+          }
+        } catch (error) {
+          return new Response(error instanceof Error ? error.message : "AI provider is not configured", {
+            status: 500,
+          });
+        }
 
         const system = [
           "You are the SAGE Energy Guardian, an AI analyst for a smart campus energy platform.",
@@ -37,9 +52,12 @@ export const Route = createFileRoute("/api/chat")({
         ].join("\n");
 
         const requested = typeof body.model === "string" ? body.model : DEFAULT_MODEL;
-        const model = (ALLOWED_MODELS as readonly string[]).includes(requested)
-          ? requested
-          : DEFAULT_MODEL;
+        const model =
+          provider === "openai-compatible"
+            ? process.env["AI_MODEL"] ?? "gpt-4o-mini"
+            : (ALLOWED_MODELS as readonly string[]).includes(requested)
+              ? requested
+              : DEFAULT_MODEL;
 
         try {
           const result = streamText({

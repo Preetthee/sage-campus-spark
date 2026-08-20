@@ -170,11 +170,26 @@ function SettingsPage() {
           </label>
 
           <label className="mt-4 block text-xs text-muted-foreground">
+            AI provider
+            <select
+              value={settings.aiProvider}
+              onChange={(e) =>
+                updateSettings({ aiProvider: e.target.value as "lovable" | "openai-compatible" })
+              }
+              disabled={!settings.liveAi}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary/50 disabled:opacity-50"
+            >
+              <option value="lovable">Lovable AI gateway</option>
+              <option value="openai-compatible">External OpenAI-compatible API</option>
+            </select>
+          </label>
+
+          <label className="mt-4 block text-xs text-muted-foreground">
             Guardian model
             <select
               value={settings.aiModel}
               onChange={(e) => updateSettings({ aiModel: e.target.value })}
-              disabled={!settings.liveAi}
+              disabled={!settings.liveAi || settings.aiProvider !== "lovable"}
               className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary/50 disabled:opacity-50"
             >
               <option value="google/gemini-3.7-flash">Gemini 3.7 Flash — balanced default</option>
@@ -185,8 +200,11 @@ function SettingsPage() {
           </label>
 
           <p className="mt-4 text-[11px] text-muted-foreground">
-            Third-party keys (Gemini, Groq, OpenRouter, Fireworks, Cohere) are not stored in this app. Model
-            access runs through Lovable AI on the server, so no API key is ever exposed to the browser.
+            For an external API, add <span className="text-foreground">AI_API_BASE_URL</span>,{" "}
+            <span className="text-foreground">AI_API_KEY</span>, and <span className="text-foreground">AI_MODEL</span>{" "}
+            to server secrets (or <span className="text-foreground">.env.local</span> for local development). The API
+            must support the OpenAI chat-completions format; OpenAI, Groq, OpenRouter, and compatible gateways work.
+            Keys remain server-side and are never stored in this browser.
           </p>
         </Panel>
 

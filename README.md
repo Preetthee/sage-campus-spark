@@ -44,6 +44,20 @@ The canonical live state is stored in the `campus_telemetry` Supabase table. The
 
 The producer is a development data source until a real IoT gateway is connected. It writes through `POST /api/telemetry/advance` using the `SAGE_PRODUCER_KEY` header. A future gateway can replace this endpoint while preserving the dashboard read contract.
 
+## External AI API
+
+The AI Energy Guardian supports Lovable AI and OpenAI-compatible providers. Select **External OpenAI-compatible API** in Settings and configure these server-only values (never `VITE_` variables):
+
+```bash
+AI_API_BASE_URL="https://api.openai.com/v1"
+AI_API_KEY="your-provider-api-key"
+AI_API_FALLBACK_KEYS="optional-second-key,optional-third-key"
+AI_MODEL="gpt-4o-mini"
+```
+
+This also supports OpenRouter, Groq, and other providers that implement OpenAI's chat-completions API. When a
+provider returns a quota-limit or key-rejection response, SAGE automatically retries with the next fallback key.
+
 | Endpoint | Description |
 | --- | --- |
 | `GET /api/telemetry/current` | The newest persisted campus state and recording timestamp. |

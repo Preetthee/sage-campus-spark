@@ -46,13 +46,21 @@ function AiInsights() {
   ctxRef.current = ctx;
   const modelRef = useRef(settings.aiModel);
   modelRef.current = settings.aiModel;
+  const providerRef = useRef(settings.aiProvider);
+  providerRef.current = settings.aiProvider;
 
   const transport = useMemo(
     () =>
       new DefaultChatTransport({
         api: "/api/chat",
         prepareSendMessagesRequest: ({ messages, body }) => ({
-          body: { ...body, messages, context: ctxRef.current, model: modelRef.current },
+          body: {
+            ...body,
+            messages,
+            context: ctxRef.current,
+            model: modelRef.current,
+            provider: providerRef.current,
+          },
         }),
       }),
     [],
@@ -104,7 +112,11 @@ function AiInsights() {
         actions={
           <div className="flex flex-wrap items-center gap-2">
             <Pill tone={settings.liveAi ? "energy" : "muted"}>
-              {settings.liveAi ? `Lovable AI · ${settings.aiModel.split("/")[1]}` : "Offline demo mode"}
+              {settings.liveAi
+                ? settings.aiProvider === "lovable"
+                  ? `Lovable AI · ${settings.aiModel.split("/")[1]}`
+                  : "External AI API"
+                : "Offline demo mode"}
             </Pill>
             <Pill tone="info">
               Context: {ctx.worstRooms.length} hot rooms · {ctx.openAlerts} alerts
@@ -117,7 +129,11 @@ function AiInsights() {
         <Panel
           className="xl:col-span-2"
           title="Energy Guardian"
-          description={settings.liveAi ? "Powered by Lovable AI over live simulated telemetry" : "Local rule-based fallback"}
+          description={
+            settings.liveAi
+              ? "Powered by the configured AI provider over live simulated telemetry"
+              : "Local rule-based fallback"
+          }
         >
           <div ref={scroller} className="flex max-h-[460px] flex-col gap-3 overflow-y-auto pr-1">
             <div className="max-w-[92%] rounded-lg border border-border bg-background/50 px-3 py-2 text-xs leading-relaxed text-foreground">
