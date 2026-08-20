@@ -139,3 +139,27 @@ export async function claimAlert(alert: SnapshotAlert): Promise<boolean> {
   }
   return true;
 }
+
+const JSON_HEADERS = { "content-type": "application/json" } as const;
+
+export function jsonResponse(body: unknown, status = 200) {
+  return new Response(JSON.stringify(body), { status, headers: JSON_HEADERS });
+}
+
+/** Returns a 401/500 Response when the caller is not the configured bot, else null. */
+export function authorizeBot(request: Request): Response | null {
+  const expected = process.env["SAGE_BOT_TOKEN"];
+  if (!expected) return jsonResponse({ error: "SAGE_BOT_TOKEN is not configured" }, 500);
+
+  const provided =
+    request.headers.get("x-sage-bot-token") ??
+    request.headers.get("authorization")?.replace(/^Bearer\s+/i, "") ??
+    "";
+
+  if (provided.length !== expected.length) return jsonResponse({ error: "Unauthorized" }, 401);
+  let diff = 0;
+  for (let i = 0; i < expected.length; i += 1) {
+    diff |= provided.charCodeAt(i) ^ expected.charCodeAt(i);
+  }
+  return diff === 0 ? null : jsonResponse({ error: "Unauthorized" }, 401);
+}
