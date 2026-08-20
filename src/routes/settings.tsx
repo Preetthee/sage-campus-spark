@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 
 import { Panel, PageHeader, Pill } from "@/components/sage/ui";
+import { sendDiscordTest } from "@/lib/discord/discord.functions";
 import { useSage } from "@/lib/sage/store";
 
 export const Route = createFileRoute("/settings")({
@@ -23,7 +26,24 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { settings, updateSettings, running, setRunning } = useSage();
+  const { settings, updateSettings, running, setRunning, discordSyncedAt, discordAlertsSent } =
+    useSage();
+  const runTest = useServerFn(sendDiscordTest);
+  const [testState, setTestState] = useState<string | null>(null);
+
+  const handleTest = async () => {
+    setTestState("Sending…");
+    try {
+      const res = await runTest({ data: { campusName: settings.campusName } });
+      setTestState(
+        res.ok
+          ? "Test message delivered to Discord."
+          : "No Discord webhook is configured yet on the server.",
+      );
+    } catch (error) {
+      setTestState(error instanceof Error ? error.message : "Failed to reach Discord.");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -163,6 +183,115 @@ function SettingsPage() {
           <p className="mt-4 text-[11px] text-muted-foreground">
             Third-party keys (Gemini, Groq, OpenRouter, Fireworks, Cohere) are not stored in this app. Model
             access runs through Lovable AI on the server, so no API key is ever exposed to the browser.
+          </p>
+        </Panel>
+
+        <Panel
+          className="xl:col-span-2"
+          title="Discord bot"
+          description="Critical alerts, /status requests and AI Q&A in your server"
+        >
+          <label className="flex items-start justify-between gap-4 rounded-md border border-border bg-background/40 p-3">
+            <span className="text-xs text-muted-foreground">
+              <span className="block text-sm font-medium text-foreground">Discord integration</span>
+              Pushes a telemetry snapshot every 30 seconds so the bot can answer even when this dashboard is
+              closed, and forwards new alerts to your alert channel.
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.discordEnabled}
+              onChange={(e) => updateSettings({ discordEnabled: e.target.checked })}
+              className="mt-1 size-4 accent-[var(--color-primary)]"
+            />
+          </label>
+
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <label className="block text-xs text-muted-foreground">
+              Minimum severity to post
+              <select
+                value={settings.discordMinSeverity}
+                onChange={(e) =>
+                  updateSettings({ discordMinSeverity: e.target.value as "critical" | "warning" })
+                }
+                disabled={!settings.discordEnabled}
+                className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary/50 disabled:opacity-50"
+              >
+                <option value="critical">Critical only</option>
+                <option value="warning">Warning and above</option>
+              </select>
+            </label>
+
+            <div className="rounded-md border border-border bg-background/40 px-3 py-2 text-xs text-muted-foreground">
+              <div className="flex items-center justify-between">
+                <span>Last snapshot pushed</span>
+                <span className="tabular text-foreground">
+                  {discordSyncedAt ? new Date(discordSyncedAt).toLocaleTimeString() : "—"}
+                </span>
+              </div>
+              <div className="mt-1 flex items-center justify-between">
+                <span>Alerts posted this session</span>
+                <span className="tabular text-foreground">{discordAlertsSent}</span>
+              </div>
+            </div>
+          </div>
+
+          <label className="mt-4 flex items-start justify-between gap-4 rounded-md border border-border bg-background/40 p-3">
+            <span className="text-xs text-muted-foreground">
+              <span className="block text-sm font-medium text-foreground">Quiet hours</span>
+              Suppress alert posts overnight. Status requests from Discord always work.
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.discordQuietHours}
+              onChange={(e) => updateSettings({ discordQuietHours: e.target.checked })}
+              disabled={!settings.discordEnabled}
+              className="mt-1 size-4 accent-[var(--color-primary)]"
+            />
+          </label>
+
+          <div className="mt-3 grid gap-4 md:grid-cols-2">
+            <label className="block text-xs text-muted-foreground">
+              Quiet from (hour): <span className="tabular text-foreground">{settings.discordQuietFrom}:00</span>
+              <input
+                type="range"
+                min={0}
+                max={23}
+                value={settings.discordQuietFrom}
+                onChange={(e) => updateSettings({ discordQuietFrom: Number(e.target.value) })}
+                disabled={!settings.discordEnabled || !settings.discordQuietHours}
+                className="mt-2 w-full accent-[var(--color-primary)] disabled:opacity-50"
+              />
+            </label>
+            <label className="block text-xs text-muted-foreground">
+              Quiet until (hour): <span className="tabular text-foreground">{settings.discordQuietTo}:00</span>
+              <input
+                type="range"
+                min={0}
+                max={23}
+                value={settings.discordQuietTo}
+                onChange={(e) => updateSettings({ discordQuietTo: Number(e.target.value) })}
+                disabled={!settings.discordEnabled || !settings.discordQuietHours}
+                className="mt-2 w-full accent-[var(--color-primary)] disabled:opacity-50"
+              />
+            </label>
+          </div>
+
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <button
+              type="button"
+              onClick={() => void handleTest()}
+              className="rounded-md bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:opacity-90"
+            >
+              Send test message
+            </button>
+            {testState ? <span className="text-[11px] text-muted-foreground">{testState}</span> : null}
+          </div>
+
+          <p className="mt-4 text-[11px] text-muted-foreground">
+            The bot itself runs on your machine from the <span className="text-foreground">bot/</span> folder in this
+            project — see <span className="text-foreground">bot/README.md</span> for the full setup. Slash commands
+            available: <span className="text-foreground">/status</span>, <span className="text-foreground">/waste</span>,{" "}
+            <span className="text-foreground">/alerts</span>, <span className="text-foreground">/ask</span>.
           </p>
         </Panel>
       </div>
