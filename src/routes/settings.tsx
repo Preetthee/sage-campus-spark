@@ -125,6 +125,46 @@ function SettingsPage() {
             loads across every monitored classroom.
           </p>
         </Panel>
+
+        <Panel
+          className="xl:col-span-2"
+          title="AI Energy Guardian"
+          description="The chatbot on the AI Insights page"
+        >
+          <label className="flex items-start justify-between gap-4 rounded-md border border-border bg-background/40 p-3">
+            <span className="text-xs text-muted-foreground">
+              <span className="block text-sm font-medium text-foreground">Live AI responses</span>
+              Uses Lovable AI (server-side, no keys to manage). Turn off to fall back to the built-in offline
+              rule-based Guardian.
+            </span>
+            <input
+              type="checkbox"
+              checked={settings.liveAi}
+              onChange={(e) => updateSettings({ liveAi: e.target.checked })}
+              className="mt-1 size-4 accent-[var(--color-primary)]"
+            />
+          </label>
+
+          <label className="mt-4 block text-xs text-muted-foreground">
+            Guardian model
+            <select
+              value={settings.aiModel}
+              onChange={(e) => updateSettings({ aiModel: e.target.value })}
+              disabled={!settings.liveAi}
+              className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm text-foreground outline-none focus:border-primary/50 disabled:opacity-50"
+            >
+              <option value="google/gemini-3.7-flash">Gemini 3.7 Flash — balanced default</option>
+              <option value="google/gemini-3.5-flash">Gemini 3.5 Flash — fast</option>
+              <option value="google/gemini-3.1-flash-lite">Gemini 3.1 Flash Lite — cheapest</option>
+              <option value="google/gemini-3.1-pro-preview">Gemini 3.1 Pro — deepest reasoning</option>
+            </select>
+          </label>
+
+          <p className="mt-4 text-[11px] text-muted-foreground">
+            Third-party keys (Gemini, Groq, OpenRouter, Fireworks, Cohere) are not stored in this app. Model
+            access runs through Lovable AI on the server, so no API key is ever exposed to the browser.
+          </p>
+        </Panel>
       </div>
     </div>
   );
