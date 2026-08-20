@@ -2,7 +2,15 @@ import { createLovableAiGatewayProvider, getLovableAiGatewayRunId } from "@/lib/
 import { createFileRoute } from "@tanstack/react-router";
 import { convertToModelMessages, streamText, type UIMessage } from "ai";
 
-type ChatRequestBody = { messages?: unknown; context?: unknown };
+type ChatRequestBody = { messages?: unknown; context?: unknown; model?: unknown };
+
+const ALLOWED_MODELS = [
+  "google/gemini-3.7-flash",
+  "google/gemini-3.5-flash",
+  "google/gemini-3.1-flash-lite",
+  "google/gemini-3.1-pro-preview",
+] as const;
+const DEFAULT_MODEL = ALLOWED_MODELS[0];
 
 export const Route = createFileRoute("/api/chat")({
   server: {
@@ -28,9 +36,14 @@ export const Route = createFileRoute("/api/chat")({
           JSON.stringify(body.context ?? {}),
         ].join("\n");
 
+        const requested = typeof body.model === "string" ? body.model : DEFAULT_MODEL;
+        const model = (ALLOWED_MODELS as readonly string[]).includes(requested)
+          ? requested
+          : DEFAULT_MODEL;
+
         try {
           const result = streamText({
-            model: gateway("google/gemini-3.7-flash"),
+            model: gateway(model),
             system,
             messages: await convertToModelMessages(body.messages as UIMessage[]),
             abortSignal: request.signal,
