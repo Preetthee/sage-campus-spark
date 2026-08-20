@@ -13,6 +13,8 @@ export const DEFAULT_SETTINGS: Settings = {
   tickMs: 2000,
   highConsumptionKw: 2.4,
   campusName: "Varendra University",
+  liveAi: true,
+  aiModel: "google/gemini-3.7-flash",
 };
 
 function efficiencyFrom(wastePct: number) {
