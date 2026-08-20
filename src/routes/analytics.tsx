@@ -12,10 +12,12 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useEffect, useMemo, useState } from "react";
 
 import { LoadChart } from "@/components/sage/LoadChart";
 import { Kpi, Panel, PageHeader } from "@/components/sage/ui";
 import { formatMoney, formatNumber } from "@/lib/sage/analytics";
+import { getYearlyEnergyData, type DailyEnergyRecord } from "@/lib/sage/backend";
 import { useSage } from "@/lib/sage/store";
 
 export const Route = createFileRoute("/analytics")({
@@ -39,11 +41,24 @@ export const Route = createFileRoute("/analytics")({
 
 function Analytics() {
   const { state, metrics, settings } = useSage();
+  const [yearlyRecords, setYearlyRecords] = useState<DailyEnergyRecord[]>([]);
 
-  const weekly = ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((day, i) => ({
-    day,
-    kwh: Number((metrics.dailyKwh * [0.62, 0.95, 1.05, 1.02, 1.08, 0.98, 0.4][i]!).toFixed(0)),
-  }));
+  useEffect(() => {
+    void getYearlyEnergyData().then(setYearlyRecords).catch(() => setYearlyRecords([]));
+  }, []);
+
+  const weekly = useMemo(() => {
+    if (yearlyRecords.length >= 7) {
+      return yearlyRecords.slice(-7).map((record) => ({
+        day: new Date(`${record.date}T00:00:00`).toLocaleDateString("en-US", { weekday: "short" }),
+        kwh: record.kwh,
+      }));
+    }
+    return ["Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri"].map((day, i) => ({
+      day,
+      kwh: Number((metrics.dailyKwh * [0.62, 0.95, 1.05, 1.02, 1.08, 0.98, 0.4][i]!).toFixed(0)),
+    }));
+  }, [metrics.dailyKwh, yearlyRecords]);
 
   const split = [
     { name: "Lighting", value: Math.round(metrics.kw * 0.32 * 100) / 100 },
@@ -81,7 +96,10 @@ function Analytics() {
       </Panel>
 
       <div className="grid gap-4 xl:grid-cols-2">
-        <Panel title="Weekly consumption" description="kWh per day (Sat–Fri)">
+        <Panel
+          title="Weekly consumption"
+          description={yearlyRecords.length ? "Last 7 days from the local backend's 365-day telemetry" : "Start the local backend to load saved telemetry"}
+        >
           <div style={{ height: 260 }}>
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={weekly} margin={{ top: 8, right: 8, left: -12, bottom: 0 }}>

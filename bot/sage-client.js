@@ -37,6 +37,7 @@ export const sage = {
   status: () => call("status"),
   waste: () => call("waste"),
   alerts: () => call("alerts"),
+  worstDate: () => call("ask", { method: "POST", body: JSON.stringify({ question: "Which date had the most energy waste?" }) }),
   ask: (question, asker) =>
     call("ask", { method: "POST", body: JSON.stringify({ question, asker }) }),
 };

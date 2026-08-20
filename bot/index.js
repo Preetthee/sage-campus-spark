@@ -131,11 +131,22 @@ async function handleAsk(interaction) {
   await interaction.editReply({ embeds: [embed] });
 }
 
+async function handleWorstDate(interaction) {
+  const { answer, snapshotAt } = await sage.worstDate();
+  const embed = new EmbedBuilder()
+    .setTitle("📅 Highest-waste date — SAGE")
+    .setColor(AMBER)
+    .setDescription(answer)
+    .setFooter({ text: `Calculated from 365 days of SAGE telemetry · ${ageLabel(snapshotAt)}` });
+  await interaction.editReply({ embeds: [embed] });
+}
+
 const handlers = {
   status: handleStatus,
   waste: handleWaste,
   alerts: handleAlerts,
   ask: handleAsk,
+  "worst-date": handleWorstDate,
 };
 
 const token = process.env.DISCORD_BOT_TOKEN;

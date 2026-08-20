@@ -1,472 +1,95 @@
-# Campus Energy AI
+# SAGE — Smart AI for Green Energy
 
-SAGE – Smart AI for Green Energy
+SAGE is a campus-energy intelligence dashboard for Varendra University. It simulates classroom occupancy and device use, identifies energy waste, provides reports and recommendations, and includes an optional Discord bot for campus-energy questions.
 
-AI-Powered Smart Campus Energy Intelligence Platform
+## Requirements
 
-Overview
+- Node.js 20 or later
+- npm 10 or later
 
-SAGE is an AI-powered Smart Campus Energy Intelligence Platform designed specifically for educational institutions. It helps universities monitor, analyze, predict, and optimize energy consumption across classrooms and campus buildings.
+## Run locally
 
-The system combines IoT sensor data (or a realistic simulator), real-time analytics, and Google's Gemini AI to help campus administrators reduce electricity costs, detect energy waste, improve sustainability, and make informed operational decisions.
+Clone the repository, install its locked dependencies, then launch the dashboard and local API together:
 
-For the hackathon, Varendra University serves as the pilot campus and demonstration environment.
-
-Problem Statement
-
-Universities consume a significant amount of electricity every day.
-
-Common problems include:
-
-Lights and fans left running in empty classrooms
-
-High electricity bills
-
-No centralized real-time monitoring
-
-Delayed maintenance
-
-No AI-powered analysis
-
-Limited visibility into energy waste
-
-Difficulty predicting future consumption
-
-These issues increase operational costs while reducing energy efficiency.
-
-Proposed Solution
-
-SAGE continuously monitors classroom energy usage, processes data in real time, detects inefficiencies, and provides AI-powered recommendations that help administrators make better decisions.
-
-Instead of reacting after electricity has already been wasted, SAGE enables proactive energy management.
-
-System Workflow
-
-IoT Sensors / Sensor Simulator
-
-            │
-
-            ▼
-
-Real-Time Backend
-
-(Express + Socket.IO)
-
-            │
-
-            ▼
-
-Firebase Firestore
-
-            │
-
-            ▼
-
-Analytics Engine
-
-            │
-
-            ▼
-
-Context Builder
-
-            │
-
-            ▼
-
-Google Gemini AI
-
-            │
-
-            ▼
-
-Dashboard + AI Recommendations + Reports
-
-Core Features
-
-1. Real-Time Energy Monitoring
-
-Monitor:
-
-Buildings
-
-Classrooms
-
-Lights
-
-Fans
-
-Devices
-
-Occupancy
-
-Temperature
-
-Live power consumption
-
-All updates appear instantly using WebSockets.
-
-2. IoT Sensor Simulator
-
-For demonstration purposes, the platform includes a realistic sensor simulator.
-
-It automatically simulates:
-
-Students entering classrooms
-
-Lights turning on
-
-Fans turning on
-
-Energy consumption changes
-
-Empty classrooms
-
-Forgotten lights
-
-Device failures
-
-High energy usage
-
-Power spikes
-
-The dashboard continuously updates, making the system feel alive during the presentation.
-
-3. Analytics Engine
-
-Processes raw sensor data into useful insights.
-
-Calculates:
-
-Current energy usage
-
-Daily usage
-
-Weekly usage
-
-Monthly usage
-
-Building statistics
-
-Campus statistics
-
-Peak usage
-
-Idle consumption
-
-Waste percentage
-
-Energy efficiency score
-
-4. AI Energy Guardian
-
-Powered by Google Gemini.
-
-Users can ask questions like:
-
-Why is Room C-302 consuming so much electricity?
-
-Which classroom wastes the most energy?
-
-How can we reduce today's electricity bill?
-
-Which building is least efficient?
-
-Summarize today's campus performance.
-
-The AI receives structured summaries rather than raw sensor logs, improving efficiency and reducing token usage.
-
-5. Automatic Recommendations
-
-The AI generates recommendations such as:
-
-Turn off unused lights
-
-Turn off fans after class
-
-Schedule maintenance
-
-Replace inefficient devices
-
-Reduce peak-hour consumption
-
-Each recommendation includes:
-
-Priority
-
-Reason
-
-Estimated savings
-
-Environmental impact
-
-Confidence level
-
-Suggested action
-
-6. Smart Alerts
-
-Automatically detects:
-
-Empty rooms consuming electricity
-
-High power consumption
-
-Device failures
-
-Unexpected occupancy
-
-Offline devices
-
-Each alert can be explained by AI.
-
-7. Predictive Analytics
-
-Forecasts:
-
-Next hour
-
-Today
-
-Tomorrow
-
-Weekly usage
-
-Monthly trend
-
-Annual estimate
-
-Includes confidence scores and expected savings.
-
-8. Executive Dashboard
-
-Designed for university management.
-
-Displays:
-
-Campus KPIs
-
-Energy trends
-
-Cost analysis
-
-Building comparisons
-
-Efficiency scores
-
-Sustainability metrics
-
-AI executive summaries
-
-Annual savings projections
-
-9. Reports
-
-Generate:
-
-Daily reports
-
-Weekly reports
-
-Monthly reports
-
-Each report includes:
-
-Executive summary
-
-Campus overview
-
-Building comparison
-
-Room analysis
-
-Alerts
-
-Cost analysis
-
-Predictions
-
-AI recommendations
-
-Reports can be exported.
-
-10. Sustainability Metrics
-
-Track:
-
-Estimated CO₂ emissions
-
-CO₂ reduction
-
-Annual savings
-
-Environmental impact
-
-Campus sustainability score
-
-Dashboard Pages
-
-The application includes:
-
-Dashboard
-
-Buildings
-
-Classrooms
-
-Devices
-
-Energy Analytics
-
-AI Insights
-
-Predictions
-
-Alerts
-
-Reports
-
-Executive Dashboard
-
-Settings
-
-All pages share a consistent enterprise-style design.
-
-Technology Stack
-
-Frontend
-
-Next.js 15
-
-React 19
-
-Tailwind CSS
-
-TypeScript
-
-Backend
-
-Node.js
-
-Express.js
-
-Socket.IO
-
-Database
-
-Firebase Firestore
-
-AI
-
-Google Gemini API
-
-Validation
-
-Zod
-
-Architecture
-
-Monorepo
-
-Shared TypeScript models
-
-Modular services
-
-REST APIs
-
-Real-time WebSockets
-
-Token Optimization
-
-Instead of sending hundreds of sensor records to the AI, the backend preprocesses the data into concise summaries.
-
-This:
-
-Reduces API cost
-
-Improves response speed
-
-Prevents unnecessary token usage
-
-Makes AI responses more reliable
-
-Business Value
-
-SAGE helps universities:
-
-Reduce electricity costs
-
-Detect waste automatically
-
-Improve operational efficiency
-
-Support sustainability goals
-
-Make data-driven decisions
-
-Improve facility management
-
-The platform is designed so it can be deployed to other educational institutions with minimal configuration.
-
-Hackathon Innovation
-
-SAGE combines:
-
-Real-time IoT simulation
-
-Live analytics
-
-AI-powered recommendations
-
-Predictive forecasting
-
-Executive reporting
-
-Sustainability metrics
-
-Token-optimized AI architecture
-
-into a single intelligent campus management platform.
-
-Demo Flow
-
-Open the dashboard with live campus metrics.
-
-The simulator generates realistic classroom activity.
-
-An empty classroom continues consuming electricity.
-
-The system automatically raises an alert.
-
-AI explains the issue and recommends corrective actions.
-
-The dashboard displays estimated cost and energy savings.
-
-Predictions forecast future consumption.
-
-An executive report is generated summarizing the campus energy status.
-
-I just need the front end
-
-This project was built with [Lovable](https://lovable.dev).
-
-**Live app**: https://sage-campus-spark.lovable.app
-
-## Build with Lovable
-
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/93a4a61f-8167-4069-8bb9-6cb630155163).
-
-- **Ship faster**: describe what you want to build and Lovable handles the code.
-- **Stay in sync**: every change made in Lovable is committed straight to this repository.
-- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
-cd <repository-name>
-npm i
-npm run dev
+```bash
+git clone <repository-url>
+cd sage-campus-spark
+npm install
+npm run dev:all
 ```
+
+Open the frontend URL shown by Vite (normally `http://localhost:3000`). The backend runs at `http://localhost:4000`.
+
+### Available commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev:all` | Run the frontend and backend together. |
+| `npm run dev:frontend` | Run only the Vite/TanStack frontend. |
+| `npm run dev:backend` | Run only the local telemetry API on port 4000. |
+| `npm run build` | Create a production frontend build. |
+| `npm run discord:setup` | Configure the Discord bot interactively. |
+| `npm run discord:register` | Register the Discord slash commands. |
+| `npm run discord:start` | Start the Discord bot. |
+
+## Local backend and data
+
+The standalone Node backend is in [`backend/server.js`](backend/server.js). At startup it deterministically generates **365 days** of campus-energy records using the same four-building context as the dashboard simulator. No database or hosted service is required for local development.
+
+| Endpoint | Description |
+| --- | --- |
+| `GET /api/health` | Backend health check and generated-record count. |
+| `GET /api/analytics/year` | All 365 daily energy records. |
+| `GET /api/analytics/summary` | Annual totals, recent consumption, and the highest-waste day. |
+
+Vite proxies `/api` requests to port 4000. The Energy Analytics weekly chart automatically uses the backend data when it is available; it falls back to the live browser simulation if the backend is not running.
+
+## Discord bot
+
+The Discord bot is optional and uses the same local 365-day data. It has these commands:
+
+- `/status` — current campus-energy summary
+- `/waste` — rooms with the highest current waste
+- `/alerts` — active alerts
+- `/worst-date` — date with the most energy wasted in the stored year
+- `/ask <question>` — ask a historical or current energy question; for example, “which date had the most waste?”
+
+### Configure it
+
+1. In the [Discord Developer Portal](https://discord.com/developers/applications), open your existing application.
+2. Copy its **Application ID** from **General Information** and its **Bot Token** from **Bot**.
+3. Leave privileged gateway intents disabled; slash commands do not require them.
+4. Under **Installation** (or OAuth2 URL Generator), invite the bot with `bot` and `applications.commands` scopes. Give it `Send Messages` and `Embed Links` permissions.
+5. Run the interactive setup, which asks for the token, application ID, optional test-server/Guild ID, and a secure shared API key:
+
+   ```bash
+   npm run discord:setup
+   ```
+
+   Values are saved only in gitignored `bot/.env`. Never commit that file or share the Bot Token.
+
+6. Start or restart the backend so it reads `bot/.env`, register the commands, then start the bot:
+
+   ```bash
+   npm run dev:backend
+   npm run discord:register
+   npm run discord:start
+   ```
+
+Set a Guild ID during setup for immediate command registration while testing. Global commands can take up to an hour to appear.
+
+## Project structure
+
+```text
+backend/                 Local HTTP API and one-year telemetry generator
+bot/                     Discord slash-command bot and setup helper
+src/lib/sage/            Browser simulation, metrics, recommendations and types
+src/routes/              Dashboard pages and TanStack Start routes
+src/routes/analytics.tsx Frontend consumer of local historical data
+```
+
+## Notes
+
+- The browser simulator remains live and interactive for demonstrations.
+- The local backend is intentionally self-contained; its seeded historical data is repeatable after every clone.
+- This project remains connected to Lovable. Avoid force-pushing or rewriting published git history.

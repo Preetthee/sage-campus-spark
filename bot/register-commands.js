@@ -6,6 +6,9 @@ const commands = [
   new SlashCommandBuilder().setName("waste").setDescription("Rooms wasting the most energy right now"),
   new SlashCommandBuilder().setName("alerts").setDescription("Active SAGE energy alerts"),
   new SlashCommandBuilder()
+    .setName("worst-date")
+    .setDescription("Find the date with the most energy waste in the last year"),
+  new SlashCommandBuilder()
     .setName("ask")
     .setDescription("Ask the SAGE Energy Guardian about campus energy")
     .addStringOption((option) =>
