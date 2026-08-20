@@ -1,6 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useState } from "react";
 
 import { Panel, PageHeader, Pill } from "@/components/sage/ui";
+import { sendDiscordTest } from "@/lib/discord/discord.functions";
 import { useSage } from "@/lib/sage/store";
 
 export const Route = createFileRoute("/settings")({
@@ -23,7 +26,24 @@ export const Route = createFileRoute("/settings")({
 });
 
 function SettingsPage() {
-  const { settings, updateSettings, running, setRunning } = useSage();
+  const { settings, updateSettings, running, setRunning, discordSyncedAt, discordAlertsSent } =
+    useSage();
+  const runTest = useServerFn(sendDiscordTest);
+  const [testState, setTestState] = useState<string | null>(null);
+
+  const handleTest = async () => {
+    setTestState("Sending…");
+    try {
+      const res = await runTest({ data: { campusName: settings.campusName } });
+      setTestState(
+        res.ok
+          ? "Test message delivered to Discord."
+          : "No Discord webhook is configured yet on the server.",
+      );
+    } catch (error) {
+      setTestState(error instanceof Error ? error.message : "Failed to reach Discord.");
+    }
+  };
 
   return (
     <div className="space-y-6">
