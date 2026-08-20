@@ -14,7 +14,108 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      campus_snapshots: {
+        Row: {
+          active_alert_list: Json
+          active_rooms: number
+          annual_savings: number
+          buildings: Json
+          campus_name: string
+          co2_daily: number
+          created_at: string
+          critical_alerts: number
+          currency: string
+          daily_cost: number
+          devices_online: number
+          devices_total: number
+          efficiency: number
+          id: string
+          live_kw: number
+          occupancy: number
+          top_waste_rooms: Json
+          total_rooms: number
+          warning_alerts: number
+          waste_kw: number
+          waste_pct: number
+        }
+        Insert: {
+          active_alert_list?: Json
+          active_rooms?: number
+          annual_savings?: number
+          buildings?: Json
+          campus_name?: string
+          co2_daily?: number
+          created_at?: string
+          critical_alerts?: number
+          currency?: string
+          daily_cost?: number
+          devices_online?: number
+          devices_total?: number
+          efficiency?: number
+          id?: string
+          live_kw?: number
+          occupancy?: number
+          top_waste_rooms?: Json
+          total_rooms?: number
+          warning_alerts?: number
+          waste_kw?: number
+          waste_pct?: number
+        }
+        Update: {
+          active_alert_list?: Json
+          active_rooms?: number
+          annual_savings?: number
+          buildings?: Json
+          campus_name?: string
+          co2_daily?: number
+          created_at?: string
+          critical_alerts?: number
+          currency?: string
+          daily_cost?: number
+          devices_online?: number
+          devices_total?: number
+          efficiency?: number
+          id?: string
+          live_kw?: number
+          occupancy?: number
+          top_waste_rooms?: Json
+          total_rooms?: number
+          warning_alerts?: number
+          waste_kw?: number
+          waste_pct?: number
+        }
+        Relationships: []
+      }
+      discord_alert_log: {
+        Row: {
+          alert_id: string
+          created_at: string
+          delivered: boolean
+          detail: string | null
+          id: string
+          severity: string
+          title: string
+        }
+        Insert: {
+          alert_id: string
+          created_at?: string
+          delivered?: boolean
+          detail?: string | null
+          id?: string
+          severity: string
+          title: string
+        }
+        Update: {
+          alert_id?: string
+          created_at?: string
+          delivered?: boolean
+          detail?: string | null
+          id?: string
+          severity?: string
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
